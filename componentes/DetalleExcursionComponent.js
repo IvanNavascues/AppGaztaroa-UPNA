@@ -4,6 +4,7 @@ import { COMENTARIOS } from '../comun/comentarios';
 import { Card, Text, Divider, IconButton } from 'react-native-paper';
 import { EXCURSIONES } from '../comun/excursiones';
 import { FlatList } from 'react-native-gesture-handler';
+import { baseUrl } from '../comun/comun';
 
 function RenderComentario(props) {
     const comentarios = props.comentarios;
@@ -45,7 +46,7 @@ function RenderExcursion(props) {
                     style={styles.cardTitle}
                 />
                 <Card.Cover
-                    source={require('./imagenes/40Años.png')}
+                    source={{ uri: baseUrl + excursion.imagen }}
                     style={styles.image}
                 />
                 <Card.Content>

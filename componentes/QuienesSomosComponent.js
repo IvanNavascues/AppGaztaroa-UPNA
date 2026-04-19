@@ -4,13 +4,7 @@ import { FlatList, Image, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ACTIVIDADES } from '../comun/actividades';
 import { Card, Text } from 'react-native-paper';
-
-const imagenes = {
-    'imagenes/40Años.png': require('./imagenes/40Años.png'),
-    'imagenes/bisaurin.png': require('./imagenes/bisaurin.png'),
-    'imagenes/pruebaDeEsfuerzo.png': require('./imagenes/pruebaDeEsfuerzo.png'),
-    'imagenes/federarse.png': require('./imagenes/federarse.png'),
-};
+import { baseUrl } from '../comun/comun';
 
 function RenderHistoria() {
     return (
@@ -58,7 +52,7 @@ class QuienesSomos extends Component {
                     <Card.Content>
                         <View style={styles.row}>
                             <Image
-                                source={imagenes[item.imagen]}
+                                source={{ uri: baseUrl + item.imagen }}
                                 style={styles.leftImage}
                             />
                             <Text style={styles.descripcion}>
