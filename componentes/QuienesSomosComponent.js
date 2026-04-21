@@ -2,9 +2,15 @@
 import { Component } from 'react';
 import { FlatList, Image, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { ACTIVIDADES } from '../comun/actividades';
 import { Card, Text } from 'react-native-paper';
 import { baseUrl } from '../comun/comun';
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state) => {
+    return {
+        actividades: state.actividades
+    }
+}
 
 function RenderHistoria() {
     return (
@@ -34,12 +40,6 @@ function RenderHistoria() {
 }
 
 class QuienesSomos extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            actividades: ACTIVIDADES
-        };
-    }
     render() {
         const renderItem = ({ item }) => {
             return (
@@ -66,7 +66,7 @@ class QuienesSomos extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <FlatList
-                    data={ACTIVIDADES}
+                    data={this.props.actividades.actividades}
                     ListHeaderComponent={RenderHistoria}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}
@@ -105,4 +105,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default QuienesSomos;
+export default connect(mapStateToProps)(QuienesSomos);

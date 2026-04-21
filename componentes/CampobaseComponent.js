@@ -12,9 +12,18 @@ import Contacto from './ContactoComponent';
 import QuienesSomos from './QuienesSomosComponent';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorGaztaroaClaro, colorGaztaroaOscuro } from '../comun/comun';
+import { fetchActividades, fetchCabeceras, fetchComentarios, fetchExcursiones } from '../redux/ActionCreators';
+import { connect } from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchExcursiones: () => dispatch(fetchExcursiones()),
+    fetchComentarios: () => dispatch(fetchComentarios()),
+    fetchCabeceras: () => dispatch(fetchCabeceras()),
+    fetchActividades: () => dispatch(fetchActividades()),
+})
 
 function BotonMenu(props) {
     return (
@@ -54,11 +63,11 @@ function CustomDrawerContent(props) {
 
 
 class Campobase extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            excursiones: EXCURSIONES,
-        };
+    componentDidMount() {
+        this.props.fetchExcursiones();
+        this.props.fetchComentarios();
+        this.props.fetchCabeceras();
+        this.props.fetchActividades();
     }
     menuHeaderOptions = (title, navigation) => ({
         title,
@@ -125,10 +134,7 @@ class Campobase extends Component {
                     }}
                 >
                     {(props) => (
-                        <Calendario
-                            {...props}
-                            excursiones={this.state.excursiones}
-                        />
+                        <Calendario {...props} />
                     )}
                 </Stack.Screen>
                 <Stack.Screen
@@ -141,7 +147,6 @@ class Campobase extends Component {
                     {(props) => (
                         <DetalleExcursion
                             {...props}
-                            excursiones={this.state.excursiones}
                         />
                     )}
                 </Stack.Screen>
@@ -219,7 +224,7 @@ class Campobase extends Component {
                         ),
                     }}
                 />
-                
+
                 <Drawer.Screen
                     name="Contacto"
                     component={this.ContactoNavegador}
@@ -283,4 +288,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Campobase;
+export default connect(null, mapDispatchToProps)(Campobase);

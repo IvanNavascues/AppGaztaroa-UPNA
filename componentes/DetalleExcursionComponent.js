@@ -5,6 +5,14 @@ import { Card, Text, Divider, IconButton } from 'react-native-paper';
 import { EXCURSIONES } from '../comun/excursiones';
 import { FlatList } from 'react-native-gesture-handler';
 import { baseUrl } from '../comun/comun';
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state) => {
+    return {
+        comentarios: state.comentarios,
+        excursiones: state.excursiones
+    }
+}
 
 function RenderComentario(props) {
     const comentarios = props.comentarios;
@@ -37,48 +45,45 @@ function RenderComentario(props) {
 function RenderExcursion(props) {
     const excursion = props.excursion;
 
-    if (excursion != null) {
-        return (
-            <Card style={styles.card}>
-                <Card.Title
-                    title={excursion.nombre}
-                    titleStyle={styles.titulo}
-                    style={styles.cardTitle}
-                />
-                <Card.Cover
-                    source={{ uri: baseUrl + excursion.imagen }}
-                    style={styles.image}
-                />
-                <Card.Content>
-                    <Text style={styles.descripcion}>
-                        {excursion.descripcion}
-                    </Text>
-
-                    <View style={styles.iconoContainer}>
-                        <IconButton
-                            icon={props.favorita ? 'heart' : 'heart-outline'}
-                            size={28}
-                            onPress={() =>
-                                props.favorita
-                                    ? console.log('La excursión ya se encuentra entre las favoritas')
-                                    : props.onPress()
-                            }
-                        />
-                    </View>
-                </Card.Content>
-            </Card>
-        );
-    } else {
+    if (excursion == null) {
         return <View />;
     }
+    return (
+        <Card style={styles.card}>
+            <Card.Title
+                title={excursion.nombre}
+                titleStyle={styles.titulo}
+                style={styles.cardTitle}
+            />
+            <Card.Cover
+                source={{ uri: baseUrl + excursion.imagen }}
+                style={styles.image}
+            />
+            <Card.Content>
+                <Text style={styles.descripcion}>
+                    {excursion.descripcion}
+                </Text>
+
+                <View style={styles.iconoContainer}>
+                    <IconButton
+                        icon={props.favorita ? 'heart' : 'heart-outline'}
+                        size={28}
+                        onPress={() =>
+                            props.favorita
+                                ? console.log('La excursión ya se encuentra entre las favoritas')
+                                : props.onPress()
+                        }
+                    />
+                </View>
+            </Card.Content>
+        </Card>
+    );
 }
 
 class DetalleExcursion extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            excursiones: EXCURSIONES,
-            comentarios: COMENTARIOS,
             favoritos: []
         };
     }
@@ -90,15 +95,19 @@ class DetalleExcursion extends Component {
 
     render() {
         const { excursionId } = this.props.route.params;
+        // Validar que los datos estén disponibles
+        if (!this.props.excursiones || !this.props.comentarios) {
+            return <View style={styles.container}><Text>Cargando...</Text></View>;
+        }
         return (
             <ScrollView>
                 <RenderExcursion
-                    excursion={this.state.excursiones[+excursionId]}
+                    excursion={this.props.excursiones.excursiones[+excursionId]}
                     favorita={this.state.favoritos.some(el => el === excursionId)}
                     onPress={() => this.marcarFavorito(excursionId)}
                 />
                 <RenderComentario
-                    comentarios={this.state.comentarios.filter((comentario) => comentario.excursionId === excursionId)}
+                    comentarios={this.props.comentarios.comentarios.filter((comentario) => comentario.excursionId === excursionId)}
                 />
             </ScrollView>
 
@@ -109,6 +118,11 @@ class DetalleExcursion extends Component {
 const styles = StyleSheet.create({
     card: {
         margin: 8,
+    },
+        container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     iconoContainer: {
         alignItems: 'center',
@@ -129,4 +143,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DetalleExcursion;
+export default connect(mapStateToProps)(DetalleExcursion);
